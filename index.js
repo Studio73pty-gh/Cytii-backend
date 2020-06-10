@@ -11,11 +11,6 @@ const connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     port: 3306,
     database: process.env.DATABASE,
-    ssl      : {
-        ca   : fs.readFileSync('./ssl/server-ca.pem'), // should be enough for AWS
-        key  : fs.readFileSync('./ssl/client-key.pem'), // required for google mysql cloud db
-        cert : fs.readFileSync('./ssl/client-cert.pem'), // required for google mysql cloud db
-  }
   });
    
 
