@@ -1,7 +1,6 @@
 {
   "name": "y",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
@@ -23,6 +22,9 @@
     "express": "^4.17.1",
     "knex": "^0.21.0",
     "mysql": "^2.18.1",
+    "node-modules": "^1.0.1",
     "nodemon": "^2.0.3"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }
