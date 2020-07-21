@@ -19,7 +19,7 @@ const buscarCategoria = require('./controllers/BuscarCategoria');
 
 // Llamando a Uploads y Cloudinary
 
-const upload = require('./controllers/ImageUploader/multer');
+const upload = require('./controllers/ImageUploader/Multer');
 const cloudinary = require('./controllers/ImageUploader/Cloudinary');
 
 const connection = mysql.createConnection({
