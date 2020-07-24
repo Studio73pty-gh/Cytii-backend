@@ -215,7 +215,7 @@ app.use('/agregar-empresa', upload.array('image'), async(req, res) => {
     const { 
       categoria, nombre, descripcion,
       localizacion, telefono, correo, link,
-      zona 
+      mapa,zona 
         } = req.body;
   
         if (req.method === 'POST') {
@@ -240,6 +240,7 @@ app.use('/agregar-empresa', upload.array('image'), async(req, res) => {
                   nombre,
                   descripcion,
                   localizacion,
+                  mapa,
                   zona,
                   telefono,
                   correo, 
