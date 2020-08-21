@@ -4,7 +4,7 @@ const handleBuscarTodo = (req, res, db) => {
         response.sort(function(a,b){
             // Turn your strings into dates, and then subtract them
             // to get a value that is either negative, positive, or zero.
-            return new Date(a.fecha) - new Date(b.fecha);
+            return a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase());
           });
         res.json(response)
     })
