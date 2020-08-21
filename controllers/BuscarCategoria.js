@@ -10,7 +10,7 @@ const handleBuscarCategoria = (req, res, db) => {
             });
             res.json(user)
         }else{
-            res.status(400).json('empresas no encontradss')
+            res.status(400).json('!resultados')
         }
     })
     .catch(err => res.status(400).json('error buscando empresas'))
