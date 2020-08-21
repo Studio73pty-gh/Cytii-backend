@@ -15,6 +15,7 @@ const buscarEmpresa = require('./controllers/BuscarEmpresa');
 const modificarEmpresa = require('./controllers/ModificarEmpresa');
 const borrarEmpresa = require('./controllers/EliminarEmpresa');
 const buscarCategoria = require('./controllers/BuscarCategoria');
+const buscarTodo = require('./controllers/BuscarTodo');
 
 
 // Llamando a Uploads y Cloudinary
@@ -59,16 +60,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-app.get('/', (req,res) => {
-    let sql = 'SELECT * FROM cytii_empresas';
-    connection.query(sql, (err, result) => {
-        if (err){ 
-            console.log(err);
-        }
-
-        res.json(result);
-    });
-});
+app.get('/', (req,res) => {buscarTodo.handleBuscarTodo(req, res, db)});
 
 app.post('/buscar', (req, res) => {
     const empresa = req.body.empresas.toLowerCase();
