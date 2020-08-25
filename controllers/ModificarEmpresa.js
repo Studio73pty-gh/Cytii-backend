@@ -3,6 +3,7 @@ const handleModificarEmpresa = (req, res, db) =>{
     const { 
         categoria, nombre, descripcion, mapa,
         lunesaviernes, sabados, domingosyferiados,
+        twitter, facebook, instagram,
         localizacion, telefono, correo, link,
         zona 
           } = req.body;
@@ -16,6 +17,9 @@ const handleModificarEmpresa = (req, res, db) =>{
             sabados,
             domingosyferiados,
             mapa,
+            facebook,
+            twitter,
+            instagram,
             zona,
             telefono,
             correo, 

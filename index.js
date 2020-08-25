@@ -207,6 +207,7 @@ app.use('/agregar-empresa', upload.array('image'), async(req, res) => {
     const { 
       categoria, nombre, descripcion,
       lunesaviernes, sabados, domingosyferiados,
+      twitter, facebook, instagram,
       localizacion, telefono, correo, link,
       mapa,zona 
         } = req.body;
@@ -234,6 +235,9 @@ app.use('/agregar-empresa', upload.array('image'), async(req, res) => {
                   descripcion,
                   localizacion,
                   mapa,
+                  facebook,
+                  twitter,
+                  instagram,
                   lunesaviernes,
                   sabados,
                   domingosyferiados,
