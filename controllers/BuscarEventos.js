@@ -1,4 +1,4 @@
-const handleBuscarPromociones = (req, res, db) => {
+const handleBuscarEventos = (req, res, db) => {
     db.select().table('eventos')
     .then(response => {
         response.sort(function(a,b){
@@ -12,5 +12,5 @@ const handleBuscarPromociones = (req, res, db) => {
 }
 
 module.exports = {
-    handleBuscarPromociones
+    handleBuscarEventos
 }

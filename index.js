@@ -11,6 +11,7 @@ require('dotenv').config();
 //Llamando controladores
 const registro = require('./controllers/Registro');
 const inicioSesion = require('./controllers/IniciarSesion');
+
 const buscarEmpresa = require('./controllers/BuscarEmpresa');
 const modificarEmpresa = require('./controllers/ModificarEmpresa');
 const borrarEmpresa = require('./controllers/EliminarEmpresa');
@@ -23,6 +24,9 @@ const modificarPromocion = require('./controllers/ModificarPromocion');
 const borrarPromocion = require('./controllers/EliminarPromocion');
 
 const buscarEventos = require('./controllers/BuscarEventos');
+const buscarEventoId = require('./controllers/BuscarEvento');
+const modificarEvento = require('./controllers/ModificarEvento');
+const borrarEvento = require('./controllers/BorrarEvento');
 
 // Llamando a Uploads y Cloudinary
 
@@ -365,7 +369,7 @@ app.use('/agregar-promocion', upload.array('image'), async(req, res) => {
                 promocion,
                 fecha,   
                 imagen: safeUrl   
-             }).then(res.status(200).json('post agregado'))
+             }).then(res.status(200).json('promocion agregada'))
                // id: urls[0].id
           } else {
         res.status(405).json({
@@ -423,10 +427,110 @@ app.delete('/borrar-promocion/:id', (req, res) => {borrarPromocion.handleborrarP
 
 
 //--------------------- Endpoints de Eventos
-//Buscar todas las promociones
+//Buscar todas las eventos
 app.get('/home-eventos', (req,res) => {buscarEventos.handleBuscarEventos(req, res, db)});
 
+//Buscar evento por ID
+app.get('/buscar-evento/:id', (req, res) => {buscarEventoId.handleBuscarEventoId(req, res, db)});
 
+//Agregar evento
+app.use('/agregar-evento', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+  
+    const { 
+      nombre,
+      intro,
+      evento,
+      fecha 
+        } = req.body;
+  
+  
+    if (req.method === 'POST') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+  
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+               db('eventos').insert({
+                nombre,
+                intro,
+                evento,
+                fecha,   
+                imagen: safeUrl   
+             }).then(res.status(200).json('evento agregado'))
+               // id: urls[0].id
+          } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+  })
+  
+//Modificar evento
+app.patch('/modificar-evento/:id', (req, res) => {modificarEvento.handleModificarEvento(req, res, db)});
+
+//Modificar Imagen Evento
+app.use('/modificar-imagen-evento/:id', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+    const { id } = req.params;
+    if (req.method === 'PATCH') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+              db('eventos').where({id: id}).update({             
+                imagen: safeUrl
+               // id: urls[0].id
+  
+            })
+               .then(console.log)           
+            
+        res.status(200).json('exito');
+    } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+    
+  })
+  
+// Borrar evento
+app.delete('/borrar-evento/:id', (req, res) => {borrarEvento.handleBorrarEvento(req, res, db)});
+  
+
+//--------------------- Endpoints de Blog
  
 const port = process.env.PORT || 3000;
 

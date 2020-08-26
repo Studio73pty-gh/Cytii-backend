@@ -1,12 +1,12 @@
-const handleBuscarPromocionId = (req, res, db) => {
+const handleBuscarEventoId = (req, res, db) => {
     const { id } = req.params;
-    db.select('*').from('promociones').where({
+    db.select('*').from('eventos').where({
         id: id
     }).then(user => {
         if(user.length){
             res.json(user[0])
         }else{
-            res.status(400).json('promocion no encontrado')
+            res.status(400).json('evento no encontrado')
         }
     })
     .catch(err => res.status(400).json('error buscando empresa'))
@@ -14,5 +14,5 @@ const handleBuscarPromocionId = (req, res, db) => {
 }
 
 module.exports = {
-    handleBuscarPromocionId
+    handleBuscarEventoId
 }
