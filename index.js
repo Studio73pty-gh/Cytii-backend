@@ -17,6 +17,12 @@ const borrarEmpresa = require('./controllers/EliminarEmpresa');
 const buscarCategoria = require('./controllers/BuscarCategoria');
 const buscarTodo = require('./controllers/BuscarTodo');
 
+const buscarPromociones = require('./controllers/BuscarPromociones');
+const buscarPromocionId = require('./controllers/buscarPromocion');
+const modificarPromocion = require('./controllers/ModificarPromocion');
+const borrarPromocion = require('./controllers/EliminarPromocion');
+
+const buscarEventos = require('./controllers/BuscarEventos');
 
 // Llamando a Uploads y Cloudinary
 
@@ -182,6 +188,8 @@ app.post('/buscar', (req, res) => {
         }
 });
 
+//-------------------- Endpoints de empresas
+
 //Buscar por categoria
 app.post('/buscar-empresas-categoria', (req, res) => {buscarCategoria.handleBuscarCategoria(req, res, db)})
 
@@ -307,6 +315,116 @@ app.get('/buscar-empresa/:id', (req, res) => {buscarEmpresa.handleBuscarEmpresa(
   
 //Eliminar Empresa
 app.delete('/borrar-empresa/:id', (req, res) => {borrarEmpresa.handleEliminarEmpresa(req, res, db)});
+
+
+//--------------------- Endpoints de Promociones
+
+//Buscar todas las promociones
+app.get('/home-promociones', (req,res) => {buscarPromociones.handleBuscarPromociones(req, res, db)});
+
+//Buscar promocion por ID
+app.get('/buscar-promocion/:id', (req, res) => {buscarPromocionId.handleBuscarPromocionId(req, res, db)});
+
+//Agregar promocion
+app.use('/agregar-promocion', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+  
+    const { 
+      titulo,
+      intro,
+      promocion,
+      fecha 
+        } = req.body;
+  
+  
+    if (req.method === 'POST') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+  
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+               db('promociones').insert({
+                titulo,
+                intro,
+                promocion,
+                fecha,   
+                imagen: safeUrl   
+             }).then(res.status(200).json('post agregado'))
+               // id: urls[0].id
+          } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+  })
+  
+//Modificar promocion
+app.patch('/modificar-promocion/:id', (req, res) => {modificarPromocion.handleModificarPromocion(req, res, db)});
+
+//Modificar Imagen Promocion
+app.use('/modificar-imagen-promocion/:id', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+    const { id } = req.params;
+    if (req.method === 'PATCH') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+              db('promociones').where({id: id}).update({             
+                imagen: safeUrl
+               // id: urls[0].id
+  
+            })
+               .then(console.log)           
+            
+        res.status(200).json('exito');
+    } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+    
+  })
+  
+// Borrar promocion
+app.delete('/borrar-promocion/:id', (req, res) => {borrarPromocion.handleborrarPromocion(req, res, db)});
+
+
+//--------------------- Endpoints de Eventos
+//Buscar todas las promociones
+app.get('/home-eventos', (req,res) => {buscarEventos.handleBuscarEventos(req, res, db)});
 
 
  
