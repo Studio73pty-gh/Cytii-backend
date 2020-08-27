@@ -19,7 +19,7 @@ const buscarCategoria = require('./controllers/BuscarCategoria');
 const buscarTodo = require('./controllers/BuscarTodo');
 
 const buscarPromociones = require('./controllers/BuscarPromociones');
-const buscarPromocionId = require('./controllers/buscarPromocion');
+const buscarPromocionId = require('./controllers/BuscarPromocion');
 const modificarPromocion = require('./controllers/ModificarPromocion');
 const borrarPromocion = require('./controllers/EliminarPromocion');
 
