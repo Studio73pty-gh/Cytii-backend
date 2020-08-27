@@ -7,5 +7,5 @@ const handleborrarPromocion = (req, res, db) => {
 
 
 module.exports = {
-    handleborrarPromocion: handleborrarPromocion
+ handleborrarPromocion
 }
