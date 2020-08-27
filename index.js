@@ -550,11 +550,11 @@ app.use('/agregar-post', upload.array('image'), async(req, res) => {
       safeUrl = str.substr(0, index) + value + str.substr(index);
   }
   
+  const fecha = new Date();
     const { 
       titulo,
       intro,
       contenido,
-      fecha 
         } = req.body;
   
   

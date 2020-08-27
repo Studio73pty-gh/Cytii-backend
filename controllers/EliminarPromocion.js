@@ -1,4 +1,4 @@
-const handleBorrarPost = (req, res, db) => {
+const handleborrarPromocion = (req, res, db) => {
     const { id } = req.params;
     db('promociones').where({id})
     .del()
@@ -7,5 +7,5 @@ const handleBorrarPost = (req, res, db) => {
 
 
 module.exports = {
-    handleBorrarPost: handleBorrarPost
+    handleborrarPromocion: handleborrarPromocion
 }
