@@ -7,7 +7,7 @@ const handleModificarEvento = (req, res, db) =>{
         fecha
         } = req.body;
 
-               db('promociones').where({ id }).update({     
+               db('eventos').where({ id }).update({     
                 nombre,
                 intro,
                 evento,

@@ -28,6 +28,11 @@ const buscarEventoId = require('./controllers/BuscarEvento');
 const modificarEvento = require('./controllers/ModificarEvento');
 const borrarEvento = require('./controllers/BorrarEvento');
 
+const buscarPosts = require('./controllers/BuscarPosts');
+const buscarPostId = require('./controllers/BuscarPost');
+const modificarPost = require('./controllers/ModificarPost');
+const borrarPost = require('./controllers/BorrarPost');
+
 // Llamando a Uploads y Cloudinary
 
 const upload = require('./controllers/ImageUploader/Multer');
@@ -531,7 +536,112 @@ app.delete('/borrar-evento/:id', (req, res) => {borrarEvento.handleBorrarEvento(
   
 
 //--------------------- Endpoints de Blog
- 
+ //Buscar todas las blog posts
+app.get('/home-posts', (req,res) => {buscarPosts.handleBuscarPosts(req, res, db)});
+
+//Buscar post por ID
+app.get('/buscar-post/:id', (req, res) => {buscarPostId.handleBuscarPostId(req, res, db)});
+
+//Agregar post
+app.use('/agregar-post', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+  
+    const { 
+      titulo,
+      intro,
+      contenido,
+      fecha 
+        } = req.body;
+  
+  
+    if (req.method === 'POST') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+  
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+               db('blog').insert({
+                titulo,
+                intro,
+                contenido,
+                fecha,   
+                imagen: safeUrl   
+             }).then(res.status(200).json('post agregado'))
+               // id: urls[0].id
+          } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+  })
+  
+//Modificar post
+app.patch('/modificar-post/:id', (req, res) => {modificarPost.handleModificarPost(req, res, db)});
+
+//Modificar Imagen post
+app.use('/modificar-imagen-post/:id', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'Cytii');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+    const { id } = req.params;
+    if (req.method === 'PATCH') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+              db('blog').where({id: id}).update({             
+                imagen: safeUrl
+               // id: urls[0].id
+  
+            })
+               .then(console.log)           
+            
+        res.status(200).json('exito');
+    } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+    
+  })
+  
+// Borrar post
+app.delete('/borrar-post/:id', (req, res) => {borrarPost.handleBorrarPost(req, res, db)});
+  
+
+
+
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`I'm alive here ${port}`))
